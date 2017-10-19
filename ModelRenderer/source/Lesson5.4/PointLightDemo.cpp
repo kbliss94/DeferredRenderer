@@ -51,54 +51,19 @@ namespace Rendering
 		ThrowIfFailed(mGame->Direct3DDevice()->CreateInputLayout(inputElementDescriptions, ARRAYSIZE(inputElementDescriptions), &compiledVertexShader[0], compiledVertexShader.size(), mInputLayout.ReleaseAndGetAddressOf()), "ID3D11Device::CreateInputLayout() failed.");
 
 		// Load the model
-		//Library::Model model("Content\\Models\\Teapot.obj.bin");
-		//Library::Model model("Content\\Models\\CombinedMeshSponza.obj.bin");
 		Library::Model model("Content\\Models\\MayaSponza.obj.bin");
-		//Library::Model model("Content\\Models\\MayaVase.obj.bin");
-		//Library::Model model("Content\\Models\\vase.obj.bin");
-		//Library::Model mayaModel("Content\\Models\\MayaVase.obj.bin");
-		//Library::Model mayaModel("Content\\Models\\MayaSponza.obj.bin");
-		//Library::Model model("Content\\Models\\Sphere.obj.bin");
 
 		// Create vertex and index buffers for the model
-		//INDEX 279/280 WORKS FOR MAYASPONZA
 
 		Library::Mesh* mesh;
-		//int meshIndex = 0;
 		for (int i = 0; i < static_cast<int>(model.Meshes().size()); ++i)
 		{
 			mesh = model.Meshes().at(i).get();
 
 			mMeshes.emplace_back();
-
 			CreateVertexBuffer(*mesh, mMeshes[i].VertexBuffer.ReleaseAndGetAddressOf());
 			mesh->CreateIndexBuffer(*mGame->Direct3DDevice(), mMeshes[i].IndexBuffer.ReleaseAndGetAddressOf());
 			mMeshes[i].IndexCount = static_cast<uint32_t>(mesh->Indices().size());
-
-			//if (mesh->GetMaterial().get()->Name() == "bricks" || mesh->GetMaterial().get()->Name() == "fabric_a" || mesh->GetMaterial().get()->Name() == "fabric_d"
-			//	|| mesh->GetMaterial().get()->Name() == "fabric_e" || mesh->GetMaterial().get()->Name() == "chain" || mesh->GetMaterial().get()->Name() == "vase_hanging"
-			//	|| mesh->GetMaterial().get()->Name() == "vase_round" || mesh->GetMaterial().get()->Name() == "flagpole" || mesh->GetMaterial().get()->Name() == "vase"
-			//	|| mesh->GetMaterial().get()->Name() == "leaf" || mesh->GetMaterial().get()->Name() == "arch" || mesh->GetMaterial().get()->Name() == "ceiling"
-			//	|| mesh->GetMaterial().get()->Name() == "column_a" || mesh->GetMaterial().get()->Name() == "column_b" || mesh->GetMaterial().get()->Name() == "column_c"
-			//	|| mesh->GetMaterial().get()->Name() == "floor" || mesh->GetMaterial().get()->Name() == "details" || mesh->GetMaterial().get()->Name() == "roof"
-			//	|| mesh->GetMaterial().get()->Name() == "fabric_b" || mesh->GetMaterial().get()->Name() == "fabric_c" || mesh->GetMaterial().get()->Name() == "fabric_f"
-			//	|| mesh->GetMaterial().get()->Name() == "fabric_g")
-			//{
-
-			//}
-			//else
-			//{
-			//	mMeshes.emplace_back();
-
-			//	//CreateVertexBuffer(*mesh, mMeshes[i].VertexBuffer.ReleaseAndGetAddressOf());
-			//	//mesh->CreateIndexBuffer(*mGame->Direct3DDevice(), mMeshes[i].IndexBuffer.ReleaseAndGetAddressOf());
-			//	//mMeshes[i].IndexCount = static_cast<uint32_t>(mesh->Indices().size());
-			//	CreateVertexBuffer(*mesh, mMeshes[meshIndex].VertexBuffer.ReleaseAndGetAddressOf());
-			//	mesh->CreateIndexBuffer(*mGame->Direct3DDevice(), mMeshes[meshIndex].IndexBuffer.ReleaseAndGetAddressOf());
-			//	mMeshes[meshIndex].IndexCount = static_cast<uint32_t>(mesh->Indices().size());
-
-			//	++meshIndex;
-			//}
 		}
 
 		// Create constant buffers
@@ -117,8 +82,7 @@ namespace Rendering
 		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mPSCBufferPerObject.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
 
 		// Load textures for the color and specular maps
-		wstring textureName = L"Content\\Textures\\EarthComposite.dds";
-		wstring textureNameTwo = L"Content\\Textures\\RandomTexture.dds";
+		wstring textureName = L"Content\\Textures\\bricks.png";
 		
 		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 
@@ -128,29 +92,17 @@ namespace Rendering
 
 			string materialName = mesh->GetMaterial().get()->Name();
 
-
-			//if (mesh->GetMaterial().get()->Name() == "fabric_a")
-			if (mesh->GetMaterial().get()->Name() == "bricks" || mesh->GetMaterial().get()->Name() == "fabric_a" || mesh->GetMaterial().get()->Name() == "fabric_d"
-				|| mesh->GetMaterial().get()->Name() == "fabric_e" || mesh->GetMaterial().get()->Name() == "chain" || mesh->GetMaterial().get()->Name() == "vase_hanging"
-				|| mesh->GetMaterial().get()->Name() == "vase_round" || mesh->GetMaterial().get()->Name() == "flagpole" || mesh->GetMaterial().get()->Name() == "vase"
-				|| mesh->GetMaterial().get()->Name() == "leaf" || mesh->GetMaterial().get()->Name() == "arch" || mesh->GetMaterial().get()->Name() == "ceiling" 
-				|| mesh->GetMaterial().get()->Name() == "column_a" || mesh->GetMaterial().get()->Name() == "column_b" || mesh->GetMaterial().get()->Name() == "column_c"
-				|| mesh->GetMaterial().get()->Name() == "floor" || mesh->GetMaterial().get()->Name() == "details" || mesh->GetMaterial().get()->Name() == "roof"
-				|| mesh->GetMaterial().get()->Name() == "fabric_c" || mesh->GetMaterial().get()->Name() == "fabric_f" || mesh->GetMaterial().get()->Name() == "fabric_g" )
+			if (mesh->GetMaterial().get()->Name() == "Material__47")
 			{
-				//ThrowIfFailed(CreateWICTextureFromFile(mGame->Direct3DDevice(), brickTexture.c_str(), nullptr, mMeshes[i].ColorTexture.ReleaseAndGetAddressOf()), "CreateWICTextureFromFile() failed.");
+				ThrowIfFailed(CreateWICTextureFromFile(mGame->Direct3DDevice(), textureName.c_str(), nullptr, mMeshes[i].ColorTexture.ReleaseAndGetAddressOf()), "CreateWICTextureFromFile() failed.");
+
+			}
+			else
+			{
 				wstring startFilename = L"Content\\Textures\\";
 				wstring endFilename = L".png";
 				wstring fullFilename = startFilename + converter.from_bytes(materialName) + endFilename;
 				ThrowIfFailed(CreateWICTextureFromFile(mGame->Direct3DDevice(), fullFilename.c_str(), nullptr, mMeshes[i].ColorTexture.ReleaseAndGetAddressOf()), "CreateWICTextureFromFile() failed.");
-			}
-			//else if (mesh->GetMaterial().get()->Name() == "fabric_e")
-			//{
-			//	ThrowIfFailed(CreateWICTextureFromFile(mGame->Direct3DDevice(), fabricTexture.c_str(), nullptr, mMeshes[i].ColorTexture.ReleaseAndGetAddressOf()), "CreateWICTextureFromFile() failed.");
-			//}
-			else
-			{
-				ThrowIfFailed(CreateDDSTextureFromFile(mGame->Direct3DDevice(), textureNameTwo.c_str(), nullptr, mMeshes[i].ColorTexture.ReleaseAndGetAddressOf()), "CreateDDSTextureFromFile() failed.");
 			}
 		}
 		
