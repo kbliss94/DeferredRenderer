@@ -1,0 +1,11 @@
+*.sdf
+*.opensdf
+lib/
+build/packages/
+build/ipch/
+build/DirectX.VC.VC.opendb
+build/DirectX.VC.db
+source/*/bin/
+source/*/obj/
+source/Tools/ModelPipeline/bin/
+source/Tools/ModelPipeline/obj/
