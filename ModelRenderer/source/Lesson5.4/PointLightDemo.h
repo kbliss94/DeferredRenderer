@@ -47,6 +47,9 @@ namespace Rendering
 			//color texture
 			Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> ColorTexture;
 
+			//specular texture
+			Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> SpecularMap;
+
 			//index count
 			std::uint32_t IndexCount;
 
@@ -136,7 +139,7 @@ namespace Rendering
 		Microsoft::WRL::ComPtr<ID3D11Buffer> mVSCBufferPerObject;
 		Microsoft::WRL::ComPtr<ID3D11Buffer> mPSCBufferPerFrame;
 		Microsoft::WRL::ComPtr<ID3D11Buffer> mPSCBufferPerObject;
-		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mSpecularMap;
+		//Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mSpecularMap;
 		std::unique_ptr<Library::ProxyModel> mProxyModel;
 		Library::KeyboardComponent* mKeyboard;
 		std::unique_ptr<DirectX::SpriteBatch> mSpriteBatch;

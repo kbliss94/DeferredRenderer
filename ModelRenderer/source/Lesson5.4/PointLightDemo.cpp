@@ -82,7 +82,9 @@ namespace Rendering
 		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mPSCBufferPerObject.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
 
 		// Load textures for the color and specular maps
-		wstring textureName = L"Content\\Textures\\bricks.png";
+		wstring diffTextureName = L"Content\\Textures\\bricks.png";
+		wstring specTextureName = L"Content\\Textures\\EarthSpecularMap.png";
+		wstring fabricSpec = L"Content\\Textures\\fabric_spec.png";
 		
 		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 
@@ -94,20 +96,60 @@ namespace Rendering
 
 			if (mesh->GetMaterial().get()->Name() == "Material__47")
 			{
-				ThrowIfFailed(CreateWICTextureFromFile(mGame->Direct3DDevice(), textureName.c_str(), nullptr, mMeshes[i].ColorTexture.ReleaseAndGetAddressOf()), "CreateWICTextureFromFile() failed.");
-
+				//assigning diffuse texture
+				ThrowIfFailed(CreateWICTextureFromFile(mGame->Direct3DDevice(), diffTextureName.c_str(), nullptr, mMeshes[i].ColorTexture.ReleaseAndGetAddressOf()), "CreateWICTextureFromFile() failed.");
+				
+				//assigning specular map
+				ThrowIfFailed(CreateWICTextureFromFile(mGame->Direct3DDevice(), specTextureName.c_str(), nullptr, mMeshes[i].SpecularMap.ReleaseAndGetAddressOf()), "CreateWICTextureFromFile() failed.");
 			}
-			else
+			else if ((mesh->GetMaterial().get()->Name()[0] == 'f' && mesh->GetMaterial().get()->Name()[1] == 'a' && mesh->GetMaterial().get()->Name()[2] == 'b'))
 			{
+				//assigning diffuse texture
 				wstring startFilename = L"Content\\Textures\\";
 				wstring endFilename = L".png";
 				wstring fullFilename = startFilename + converter.from_bytes(materialName) + endFilename;
 				ThrowIfFailed(CreateWICTextureFromFile(mGame->Direct3DDevice(), fullFilename.c_str(), nullptr, mMeshes[i].ColorTexture.ReleaseAndGetAddressOf()), "CreateWICTextureFromFile() failed.");
+
+				//assigning spec map
+				ThrowIfFailed(CreateWICTextureFromFile(mGame->Direct3DDevice(), fabricSpec.c_str(), nullptr, mMeshes[i].SpecularMap.ReleaseAndGetAddressOf()), "CreateWICTextureFromFile() failed.");
+			}
+			else if (mesh->GetMaterial().get()->Name() == "flagpole" || mesh->GetMaterial().get()->Name() == "vase_hanging" || mesh->GetMaterial().get()->Name() == "Material__57"
+				|| mesh->GetMaterial().get()->Name() == "vase"
+				|| mesh->GetMaterial().get()->Name() == "Material__25" || mesh->GetMaterial().get()->Name() == "Material__298" || mesh->GetMaterial().get()->Name() == "roof"
+				|| mesh->GetMaterial().get()->Name() == "chain")
+			{
+
+			}
+			//else if (mesh->GetMaterial().get()->Name() == "Material__25" || mesh->GetMaterial().get()->Name() == "Material__298" || mesh->GetMaterial().get()->Name() == "roof"
+			//	|| mesh->GetMaterial().get()->Name() == "chain")
+			//{
+			//	//assigning diffuse texture
+			//	wstring startFilename = L"Content\\Textures\\";
+			//	wstring endFilename = L".png";
+			//	wstring fullFilename = startFilename + converter.from_bytes(materialName) + endFilename;
+			//	ThrowIfFailed(CreateWICTextureFromFile(mGame->Direct3DDevice(), fullFilename.c_str(), nullptr, mMeshes[i].ColorTexture.ReleaseAndGetAddressOf()), "CreateWICTextureFromFile() failed.");
+
+			//	//assigning specular map
+			//	ThrowIfFailed(CreateWICTextureFromFile(mGame->Direct3DDevice(), specTextureName.c_str(), nullptr, mMeshes[i].SpecularMap.ReleaseAndGetAddressOf()), "CreateWICTextureFromFile() failed.");
+			//}
+			else
+			{
+				//assigning diffuse texture
+				wstring startFilename = L"Content\\Textures\\";
+				wstring endFilename = L".png";
+				wstring fullFilename = startFilename + converter.from_bytes(materialName) + endFilename;
+				ThrowIfFailed(CreateWICTextureFromFile(mGame->Direct3DDevice(), fullFilename.c_str(), nullptr, mMeshes[i].ColorTexture.ReleaseAndGetAddressOf()), "CreateWICTextureFromFile() failed.");
+			
+				//assigning spec map
+				wstring startSpec = L"Content\\Textures\\";
+				wstring endSpec = L"_spec.png";
+				wstring fullSpec = startSpec + converter.from_bytes(materialName) + endSpec;
+				ThrowIfFailed(CreateWICTextureFromFile(mGame->Direct3DDevice(), fullSpec.c_str(), nullptr, mMeshes[i].SpecularMap.ReleaseAndGetAddressOf()), "CreateWICTextureFromFile() failed.");
 			}
 		}
 		
-		textureName = L"Content\\Textures\\EarthSpecularMap.png";
-		ThrowIfFailed(CreateWICTextureFromFile(mGame->Direct3DDevice(), textureName.c_str(), nullptr, mSpecularMap.ReleaseAndGetAddressOf()), "CreateWICTextureFromFile() failed.");
+		//textureName = L"Content\\Textures\\EarthSpecularMap.png";
+		//ThrowIfFailed(CreateWICTextureFromFile(mGame->Direct3DDevice(), diffTextureName.c_str(), nullptr, mSpecularMap.ReleaseAndGetAddressOf()), "CreateWICTextureFromFile() failed.");
 
 		// Create text rendering helpers
 		mSpriteBatch = make_unique<SpriteBatch>(mGame->Direct3DDeviceContext());
@@ -214,7 +256,7 @@ namespace Rendering
 			direct3DDeviceContext->PSSetConstantBuffers(0, ARRAYSIZE(PSConstantBuffers), PSConstantBuffers);
 
 			//ID3D11ShaderResourceView* PSShaderResources[] = { mColorTexture.Get(), mSpecularMap.Get() };
-			ID3D11ShaderResourceView* PSShaderResources[] = { mMeshes[i].ColorTexture.Get(), mSpecularMap.Get() };
+			ID3D11ShaderResourceView* PSShaderResources[] = { mMeshes[i].ColorTexture.Get(), mMeshes[i].SpecularMap.Get() };
 			//ID3D11ShaderResourceView* PSShaderResources[] = { mColorTextures[i].Get(), mSpecularMap.Get() };
 			direct3DDeviceContext->PSSetShaderResources(0, ARRAYSIZE(PSShaderResources), PSShaderResources);
 			direct3DDeviceContext->PSSetSamplers(0, 1, SamplerStates::TrilinearWrap.GetAddressOf());
