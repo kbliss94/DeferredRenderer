@@ -15,22 +15,11 @@ namespace Library
 	class FpsComponent;
 	class Camera;
 	class Grid;
-
-	//offscreen render target//
 }
 
 namespace Rendering
 {
 	class PointLightDemo;
-
-	//offscreen render target//
-	enum class ColorFilter
-	{
-		GrayScale = 0,
-		Generic,
-		End
-	};
-	////////////////////////////////////
 
 	class RenderingGame final : public Library::Game
 	{
@@ -64,6 +53,15 @@ namespace Rendering
 		static const std::wstring ColorFilterPixelShaders[];
 		static const std::string ColorFilterDisplayNames[];
 		static const float BrightnessModulationRate;
+
+		enum class ColorFilter
+		{
+			GrayScale = 0,
+			Inverse,
+			Sepia,
+			Generic,
+			End
+		};
 
 		struct GenericColorFilterPSConstantBuffer
 		{

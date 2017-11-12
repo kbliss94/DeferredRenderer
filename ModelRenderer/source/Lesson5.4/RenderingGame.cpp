@@ -7,10 +7,9 @@ using namespace Library;
 namespace Rendering
 {
 	const XMVECTORF32 RenderingGame::BackgroundColor = Colors::CornflowerBlue;
-	const wstring RenderingGame::ColorFilterPixelShaders[] = { L"GrayscaleColorFilterPS.cso", L"GenericColorFilterPS.cso" };
-	const string RenderingGame::ColorFilterDisplayNames[] = { "Grayscale", "Generic" };
+	const wstring RenderingGame::ColorFilterPixelShaders[] = { L"GrayscaleColorFilterPS.cso", L"InverseColorFilterPS.cso", L"SepiaColorFilterPS.cso", L"GenericColorFilterPS.cso" };
+	const string RenderingGame::ColorFilterDisplayNames[] = { "Grayscale", "Inverse", "Sepia", "Generic" };
 	const float RenderingGame::BrightnessModulationRate = 1.0f;
-
 
 	RenderingGame::RenderingGame(std::function<void*()> getWindowCallback, std::function<void(SIZE&)> getRenderTargetSizeCallback) :
 		Game(getWindowCallback, getRenderTargetSizeCallback), mRenderStateHelper(*this),
@@ -169,8 +168,8 @@ namespace Rendering
 		mRenderStateHelper.RestoreAll();
 
 		mRenderTarget->End();
-		/////////////////
 
+		//rendering off-screen texture to a full-screen quad with a color filter shader
 		mDirect3DDeviceContext->ClearRenderTargetView(mRenderTargetView.Get(), reinterpret_cast<const float*>(&BackgroundColor));
 		mDirect3DDeviceContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
@@ -179,6 +178,8 @@ namespace Rendering
 		mRenderStateHelper.SaveAll();
 		mFpsComponent->Draw(gameTime);
 		mRenderStateHelper.RestoreAll();
+
+		mFullScreenQuad->Draw(gameTime);
 
 		HRESULT hr = mSwapChain->Present(1, 0);
 

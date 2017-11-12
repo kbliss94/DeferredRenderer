@@ -14,7 +14,7 @@ namespace Rendering
 
 	PointLightDemo::PointLightDemo(Game & game, const shared_ptr<Camera>& camera) :
 		DrawableGameComponent(game, camera), mWorldMatrix(MatrixHelper::Identity), mPointLight(game, XMFLOAT3(5.0f, 200.0f, 10.0f), 600.0f /*50.0f*/),
-		mRenderStateHelper(game), /*mIndexCount(0),*/ mTextPosition(0.0f, 40.0f), mAnimationEnabled(false)
+		mRenderStateHelper(game), mTextPosition(0.0f, 40.0f), mAnimationEnabled(false)
 	{
 	}
 
