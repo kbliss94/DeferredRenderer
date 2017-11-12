@@ -38,19 +38,10 @@ namespace Rendering
 	private:
 		struct MeshData
 		{
-			//vertex buffer
 			Microsoft::WRL::ComPtr<ID3D11Buffer> VertexBuffer;
-
-			//index buffer
 			Microsoft::WRL::ComPtr<ID3D11Buffer> IndexBuffer;
-
-			//color texture
 			Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> ColorTexture;
-
-			//specular texture
 			Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> SpecularMap;
-
-			//index count
 			std::uint32_t IndexCount;
 
 			MeshData() = default;

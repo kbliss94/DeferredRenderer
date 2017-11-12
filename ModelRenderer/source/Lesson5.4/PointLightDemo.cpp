@@ -219,22 +219,16 @@ namespace Rendering
 
 		ID3D11DeviceContext* direct3DDeviceContext = nullptr;
 
-		//for (int i = 0; i < static_cast<int>(mVertexBuffers.size()); ++i)
 		for (int i = 0; i < static_cast<int>(mMeshes.size()); ++i)
 		{
-
 			direct3DDeviceContext = mGame->Direct3DDeviceContext();
 			direct3DDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 			direct3DDeviceContext->IASetInputLayout(mInputLayout.Get());
 
 			UINT stride = sizeof(VertexPositionTextureNormal);
 			UINT offset = 0;
-			//direct3DDeviceContext->IASetVertexBuffers(0, 1, mVertexBuffer.GetAddressOf(), &stride, &offset);
-			//direct3DDeviceContext->IASetIndexBuffer(mIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 			direct3DDeviceContext->IASetVertexBuffers(0, 1, mMeshes[i].VertexBuffer.GetAddressOf(), &stride, &offset);
 			direct3DDeviceContext->IASetIndexBuffer(mMeshes[i].IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-			//direct3DDeviceContext->IASetVertexBuffers(0, 1, mVertexBuffers[i].GetAddressOf(), &stride, &offset);
-			//direct3DDeviceContext->IASetIndexBuffer(mIndexBuffers[i].Get(), DXGI_FORMAT_R32_UINT, 0);
 
 			direct3DDeviceContext->VSSetShader(mVertexShader.Get(), nullptr, 0);
 			direct3DDeviceContext->PSSetShader(mPixelShader.Get(), nullptr, 0);
@@ -255,21 +249,12 @@ namespace Rendering
 			ID3D11Buffer* PSConstantBuffers[] = { mPSCBufferPerFrame.Get(), mPSCBufferPerObject.Get() };
 			direct3DDeviceContext->PSSetConstantBuffers(0, ARRAYSIZE(PSConstantBuffers), PSConstantBuffers);
 
-			//ID3D11ShaderResourceView* PSShaderResources[] = { mColorTexture.Get(), mSpecularMap.Get() };
 			ID3D11ShaderResourceView* PSShaderResources[] = { mMeshes[i].ColorTexture.Get(), mMeshes[i].SpecularMap.Get() };
-			//ID3D11ShaderResourceView* PSShaderResources[] = { mColorTextures[i].Get(), mSpecularMap.Get() };
 			direct3DDeviceContext->PSSetShaderResources(0, ARRAYSIZE(PSShaderResources), PSShaderResources);
 			direct3DDeviceContext->PSSetSamplers(0, 1, SamplerStates::TrilinearWrap.GetAddressOf());
 
-			//direct3DDeviceContext->DrawIndexed(mIndexCount, 0, 0);
-			//direct3DDeviceContext->DrawIndexed(11406, 0, 0);
 			direct3DDeviceContext->DrawIndexed(mMeshes[i].IndexCount, 0, 0);
-			//direct3DDeviceContext->DrawIndexed(mIndexCount[i], 0, 0);
-
-			//mProxyModel->Draw(gameTime);
 		}
-
-		//direct3DDeviceContext->DrawIndexed(11406, 0, 0);
 
 		mProxyModel->Draw(gameTime);
 
